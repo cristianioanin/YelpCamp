@@ -1,32 +1,17 @@
-const express = require('express');
-const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const express = require('express');
+const app = express();
 
 mongoose.connect('mongodb://localhost/yelp_camp', { useNewUrlParser: true });
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static(`${__dirname}/public`));
 
-const campgroundSchema = new mongoose.Schema({
-  name: String,
-  image: String,
-  description: String
-});
-
-const Campground = mongoose.model('Campground', campgroundSchema);
-
-// // FOR TESTING PURPOSES - arbitrarily add data to database
-// Campground.create(
-//   {
-//     name: 'Granite Hill',
-//     image: 'https://images.pexels.com/photos/450441/pexels-photo-450441.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-//     description: 'This is a huge granite hill. No bathrooms, no water, just beautiful granite!'
-//   },
-//   (err, campground) => {
-//     if (err) console.log(err);
-//     else console.log(campground);
-//   }
-// );
+const Campground = require('./models/campground');
+const Comment = require('./models/comment');
+const seedDB = require('./seeds');
+seedDB();
 
 app.get('/', (req, res) => {
   res.render('landing');
@@ -36,7 +21,7 @@ app.get('/', (req, res) => {
 app.get('/campgrounds', (req, res) => {
   Campground.find({}, (err, campgrounds) => {
     if (err) console.log('Fail:', err);
-    else res.render('index', { campgrounds });
+    else res.render('campgrounds/index', { campgrounds });
   });
 });
 
@@ -55,14 +40,42 @@ app.post('/campgrounds', (req, res) => {
 
 // NEW Route
 app.get('/campgrounds/new', (req, res) => {
-  res.render('new');
+  res.render('campgrounds/new');
 });
 
 // SHOW Route
 app.get('/campgrounds/:id', (req, res) => {
+  Campground.findById(req.params.id).populate('comments').exec((err, dbCampground) => {
+    if (err) console.log(err);
+    else res.render('campgrounds/show', { campground: dbCampground });
+  });
+});
+
+
+// COMMENTS ROUTES
+// Comments - NEW Route
+app.get('/campgrounds/:id/comments/new', (req, res) => {
   Campground.findById(req.params.id, (err, dbCampground) => {
     if (err) console.log(err);
-    else res.render('show', { campground: dbCampground });
+    else res.render('comments/new', { campground: dbCampground });
+  });
+});
+
+app.post('/campgrounds/:id/comments', (req, res) => {
+  Campground.findById(req.params.id, (err, dbCampground) => {
+    if (err) {
+      console.log(err);
+      res.redirect('/campgrounds');
+    } else {
+      Comment.create(req.body.comment, (err, comment) => {
+        if (err) console.log(err);
+        else {
+          dbCampground.comments.push(comment);
+          dbCampground.save();
+          res.redirect(`/campgrounds/${dbCampground._id}`);
+        }
+      });
+    }
   });
 });
 
