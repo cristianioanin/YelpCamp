@@ -2,24 +2,24 @@ const express = require('express');
 const router = express.Router({ mergeParams: true });
 const Campground = require('../models/campground');
 const Comment = require('../models/comment');
+const middleware = require('../middleware');
 
 // NEW Route
-router.get('/new', isLoggedIn, (req, res) => {
+router.get('/new', middleware.isLoggedIn, (req, res) => {
   Campground.findById(req.params.id, (err, dbCampground) => {
-    if (err) console.log(err);
+    if (err) res.redirect('back');
     else res.render('comments/new', { campground: dbCampground });
   });
 });
 
 // CREATE Route
-router.post('/', isLoggedIn, (req, res) => {
+router.post('/', middleware.isLoggedIn, (req, res) => {
   Campground.findById(req.params.id, (err, dbCampground) => {
     if (err) {
-      console.log(err);
       res.redirect('/campgrounds');
     } else {
       Comment.create(req.body.comment, (err, comment) => {
-        if (err) console.log(err);
+        if (err) req.flash('warning', 'Something went wrong...');
         else {
           comment.author.id = req.user._id;
           comment.author.username = req.user.username;
@@ -28,6 +28,7 @@ router.post('/', isLoggedIn, (req, res) => {
           dbCampground.comments.push(comment);
           dbCampground.save();
 
+          req.flash('success', 'Your comment was successfully added');
           res.redirect(`/campgrounds/${dbCampground._id}`);
         }
       });
@@ -36,20 +37,27 @@ router.post('/', isLoggedIn, (req, res) => {
 });
 
 // EDIT Route
-router.get('/:comment_id/edit', checkCommentOwnership, (req, res) => {
-  Comment.findById(req.params.comment_id, (err, dbComment) => {
-    if (err) res.redirect('back');
-    else {
-      res.render('comments/edit', {
-        campgroundId: req.params.id,
-        comment: dbComment
-      });
+router.get('/:comment_id/edit', middleware.checkCommentOwnership, (req, res) => {
+  Campground.findById(req.params.id, (err, dbCampground) => {
+    if (err || dbCampground === null) {
+      req.flash('error', 'Database Error: The requested resource was not found or does not exist');
+      return res.redirect('/campgrounds');
     }
+
+    Comment.findById(req.params.comment_id, (err, dbComment) => {
+      if (err || dbComment === null) res.redirect(`/campgrounds/${req.params.id}`);
+      else {
+        res.render('comments/edit', {
+          campgroundId: req.params.id,
+          comment: dbComment
+        });
+      }
+    });
   });
 });
 
 // UPDATE Route
-router.put('/:comment_id', checkCommentOwnership, (req, res) => {
+router.put('/:comment_id', middleware.checkCommentOwnership, (req, res) => {
   Comment.findByIdAndUpdate(req.params.comment_id, req.body.comment, (err, updatedComment) => {
     if (err) res.redirect('back');
     else res.redirect(`/campgrounds/${req.params.id}`);
@@ -57,36 +65,14 @@ router.put('/:comment_id', checkCommentOwnership, (req, res) => {
 });
 
 // DESTROY Route
-router.delete('/:comment_id', checkCommentOwnership, (req, res) => {
+router.delete('/:comment_id', middleware.checkCommentOwnership, (req, res) => {
   Comment.findByIdAndRemove(req.params.comment_id, (err) => {
     if (err) res.redirect('back');
-    else res.redirect(`/campgrounds/${req.params.id}`);
+    else {
+      req.flash('success', 'Your comment was successfully deleted');
+      res.redirect(`/campgrounds/${req.params.id}`);
+    }
   });
 });
-
-// Middleware
-function isLoggedIn(req, res, next) {
-  if (req.isAuthenticated()) {
-    return next();
-  }
-  res.redirect('/login');
-}
-
-function checkCommentOwnership(req, res, next) {
-  if (req.isAuthenticated()) {
-    Comment.findById(req.params.comment_id, (err, dbComment) => {
-      if (err) res.redirect('back');
-      else {
-        if (dbComment.author.id.equals(req.user._id)) {
-          next();
-        } else {
-          res.redirect('back');
-        }
-      }
-    });
-  } else {
-    res.redirect('back');
-  }
-}
 
 module.exports = router;

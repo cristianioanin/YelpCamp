@@ -2,6 +2,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const express = require('express');
 const app = express();
+const flash = require('connect-flash');
 
 const passport = require('passport');
 const localStrategy = require('passport-local');
@@ -13,6 +14,7 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(`${__dirname}/public`));
 app.use(methodOverride('_method'));
+app.use(flash());
 
 const Campground = require('./models/campground');
 const Comment = require('./models/comment');
@@ -38,6 +40,10 @@ passport.deserializeUser(User.deserializeUser());
 
 app.use(function (req, res, next) {
   res.locals.currentUser = req.user;
+  res.locals.error = req.flash('error');
+  res.locals.success = req.flash('success');
+  res.locals.warning = req.flash('warning');
+  res.locals.info = req.flash('info');
   next();
 });
 

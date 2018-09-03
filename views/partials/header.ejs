@@ -24,7 +24,7 @@
             <li><a href="/register">Sign Up</a></li>
             <% } else { %>
               <li><a href="#">Signed in as
-                  <%= currentUser.username %></a>
+                  <em><%= currentUser.username %></em></a>
               </li>
               <li><a href="/logout">Logout</a></li>
               <% } %>
@@ -32,3 +32,26 @@
       </div>
     </div>
   </nav>
+
+  <div class="container">
+    <% if (info && info.length) { %>
+      <div class="alert alert-info" role="alert">
+        <%= info %>
+      </div>
+      <% } %>
+        <% if (success && success.length) { %>
+          <div class="alert alert-success" role="alert">
+            <%= success %>
+          </div>
+          <% } %>
+            <% if (warning && warning.length) { %>
+              <div class="alert alert-warning" role="alert">
+                <%= warning %>
+              </div>
+              <% } %>
+                <% if (error && error.length) { %>
+                  <div class="alert alert-danger" role="alert">
+                    <%= error %>
+                  </div>
+                  <% } %>
+  </div>
