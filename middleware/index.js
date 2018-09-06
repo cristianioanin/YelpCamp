@@ -11,7 +11,7 @@ middleware.checkCampgroundOwnership = function (req, res, next) {
         req.flash('error', 'Database Error: The requested resource was not found or does not exist');
         res.redirect('/campgrounds');
       } else {
-        if (dbCampground.author.id.equals(req.user._id)) {
+        if (dbCampground.author.id.equals(req.user._id) || req.user.isAdmin) {
           next();
         } else {
           req.flash('error', 'You are not authorized to access extended features over this specific resource');
@@ -32,7 +32,7 @@ middleware.checkCommentOwnership = function (req, res, next) {
         req.flash('error', 'Database Error: The requested resource was not found or does not exist');
         res.redirect(`/campgrounds/${req.params.id}`);
       } else {
-        if (dbComment.author.id.equals(req.user._id)) {
+        if (dbComment.author.id.equals(req.user._id) || req.user.isAdmin) {
           next();
         } else {
           req.flash('error', 'You are not authorized to access extended features over this specific resource');

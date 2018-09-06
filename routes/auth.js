@@ -16,7 +16,16 @@ router.get('/register', (req, res) => {
 
 // Sign Up logic handler
 router.post('/register', (req, res) => {
-  const newUser = new User({ username: req.body.username });
+  const newUser = new User({
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    email: req.body.email,
+    username: req.body.username,
+    avatar: req.body.avatar,
+    appliedForAdmin: req.body.appliedForAdmin,
+    isAdmin: req.body.adminCode === 'AC123' ? true : false
+  });
+
   User.register(newUser, req.body.password, (err, user) => {
     if (err) {
       req.flash('error', err.message);

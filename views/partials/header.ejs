@@ -35,7 +35,7 @@
                 Up
               </a></li>
             <% } else { %>
-              <li><a href="#">Signed In as <strong><%= currentUser.username %></strong></a></li>
+              <li><a href="#">Signed In as <strong><%= currentUser.username %></strong> <em><%= currentUser.isAdmin ? '(admin)' : '' %></em></a></li>
               <li><a href="/logout">Logout</a></li>
               <% } %>
         </ul>

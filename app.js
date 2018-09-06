@@ -23,6 +23,7 @@ const User = require('./models/user');
 const commentRoutes = require('./routes/comments');
 const campgroundRoutes = require('./routes/campgrounds');
 const authRoutes = require('./routes/auth');
+const userRoutes = require('./routes/users');
 
 app.locals.moment = require('moment');
 
@@ -51,5 +52,6 @@ app.use(function (req, res, next) {
 app.use('/', authRoutes);
 app.use('/campgrounds', campgroundRoutes);
 app.use('/campgrounds/:id/comments', commentRoutes);
+app.use('/users', userRoutes);
 
 app.listen(3000, () => console.log('YelpCamp server is running on port 3000'));
