@@ -14,3 +14,8 @@
 .delete-form {
   display: inline-block;
 }
+
+.auth-form {
+  width: 30%; 
+  margin: 25px auto;
+}

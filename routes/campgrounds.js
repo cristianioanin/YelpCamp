@@ -10,7 +10,7 @@ router.get('/', (req, res) => {
       req.flash('error', 'Database Error: The requested resource was not found or does not exist');
       res.redirect('/campgrounds');
     }
-    else res.render('campgrounds/index', { campgrounds });
+    else res.render('campgrounds/index', { campgrounds, page: 'campgrounds' });
   });
 });
 
@@ -18,12 +18,13 @@ router.get('/', (req, res) => {
 router.post('/', middleware.isLoggedIn, (req, res) => {
   const name = req.body.name;
   const image = req.body.image;
+  const price = req.body.price;
   const description = req.body.description;
   const author = {
     id: req.user._id,
     username: req.user.username
   };
-  const newCampground = { name, image, description, author };
+  const newCampground = { name, image, price, description, author };
 
   Campground.create(newCampground, (err, dbCampground) => {
     if (err) req.flash('warning', 'Something went wrong...');

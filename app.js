@@ -19,12 +19,12 @@ app.use(flash());
 const Campground = require('./models/campground');
 const Comment = require('./models/comment');
 const User = require('./models/user');
-const seedDB = require('./seeds');
-// seedDB();
 
 const commentRoutes = require('./routes/comments');
 const campgroundRoutes = require('./routes/campgrounds');
 const authRoutes = require('./routes/auth');
+
+app.locals.moment = require('moment');
 
 // Passport Configuration
 app.use(require('express-session')({
