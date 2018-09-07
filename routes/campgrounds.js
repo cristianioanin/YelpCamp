@@ -34,11 +34,24 @@ router.post('/', middleware.isLoggedIn, (req, res) => {
     id: req.user._id,
     username: req.user.username
   };
-  const newCampground = { name, image, price, description, author };
 
-  Campground.create(newCampground, (err, dbCampground) => {
-    if (err) req.flash('warning', 'Something went wrong...');
-    else res.redirect('/campgrounds');
+  geocoder.geocode(req.body.location, (err, data) => {
+    if (err || !data.length) {
+      console.log('Error:', err);
+
+      req.flash('error', 'Invalid address');
+      return res.redirect('back');
+    }
+    console.log('Data:', data);
+    const lat = data[0].latitude;
+    const long = data[0].longitude;
+    const location = data[0].formattedAddress;
+    const newCampground = { name, image, location, lat, long, price, description, author };
+
+    Campground.create(newCampground, (err, dbCampground) => {
+      if (err) req.flash('warning', 'Something went wrong...');
+      else res.redirect('/campgrounds');
+    });
   });
 });
 
@@ -68,9 +81,32 @@ router.get('/:id/edit', middleware.checkCampgroundOwnership, (req, res) => {
 
 // UPDATE Route
 router.put('/:id', middleware.checkCampgroundOwnership, (req, res) => {
-  Campground.findByIdAndUpdate(req.params.id, req.body.campground, (err, updatedCampground) => {
-    if (err) res.redirect('back');
-    else res.redirect(`/campgrounds/${req.params.id}`);
+  geocoder.geocode(req.body.location, (err, data) => {
+    console.log(req.body);
+    console.log('Error:', err);
+
+    if (err || !data.length) {
+      req.flash('error', 'Invalid address');
+      return res.redirect('back');
+    }
+    console.log('Data:', data);
+
+    const lat = data[0].latitude;
+    const long = data[0].longitude;
+    const location = data[0].formattedAddress;
+    const newData = {
+      name: req.body.name,
+      image: req.body.image,
+      location: location,
+      lat: lat,
+      long: long,
+      price: req.body.price,
+      description: req.body.description,
+    };
+    Campground.findByIdAndUpdate(req.params.id, newData, (err, updatedCampground) => {
+      if (err) res.redirect('back');
+      else res.redirect(`/campgrounds/${req.params.id}`);
+    });
   });
 });
 
