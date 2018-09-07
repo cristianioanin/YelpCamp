@@ -20,6 +20,12 @@
   margin: 25px auto;
 }
 
+<<<<<<< HEAD
 .profile-header {
   margin-bottom: 4rem;
+=======
+#map {
+  max-height: 400px;
+  width: 100%;
+>>>>>>> campground_location
 }
