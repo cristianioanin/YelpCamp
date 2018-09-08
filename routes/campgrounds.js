@@ -15,13 +15,31 @@ const geocoder = NodeGeocoder(options);
 
 // INDEX Route
 router.get('/', (req, res) => {
-  Campground.find({}, (err, campgrounds) => {
-    if (err) {
-      req.flash('error', 'Database Error: The requested resource was not found or does not exist');
-      res.redirect('/campgrounds');
-    }
-    else res.render('campgrounds/index', { campgrounds, page: 'campgrounds' });
-  });
+
+  if (req.query.search) {
+    const searchString = new RegExp(escapeRegExp(req.query.search), 'gi');
+
+    Campground.find({ name: searchString }, (err, campgrounds) => {
+      if (err) {
+        req.flash('error', 'Database Error: The requested resource was not found or does not exist');
+        res.redirect('/campgrounds');
+      } else if (!campgrounds.length) {
+        req.flash('warning', `No campgrounds match your query: ${req.query.search}`);
+        res.redirect('/campgrounds');
+      } else {
+        const message = `Showing results for your query: ${req.query.search}`;
+        res.render('campgrounds/index', { campgrounds, page: 'campgrounds', info: message });
+      }
+    });
+  } else {
+    Campground.find({}, (err, campgrounds) => {
+      if (err) {
+        req.flash('error', 'Database Error: The requested resource was not found or does not exist');
+        res.redirect('/campgrounds');
+      }
+      else res.render('campgrounds/index', { campgrounds, page: 'campgrounds' });
+    });
+  }
 });
 
 // CREATE Route
@@ -37,12 +55,10 @@ router.post('/', middleware.isLoggedIn, (req, res) => {
 
   geocoder.geocode(req.body.location, (err, data) => {
     if (err || !data.length) {
-      console.log('Error:', err);
-
       req.flash('error', 'Invalid address');
       return res.redirect('back');
     }
-    console.log('Data:', data);
+
     const lat = data[0].latitude;
     const long = data[0].longitude;
     const location = data[0].formattedAddress;
@@ -82,14 +98,10 @@ router.get('/:id/edit', middleware.checkCampgroundOwnership, (req, res) => {
 // UPDATE Route
 router.put('/:id', middleware.checkCampgroundOwnership, (req, res) => {
   geocoder.geocode(req.body.location, (err, data) => {
-    console.log(req.body);
-    console.log('Error:', err);
-
     if (err || !data.length) {
       req.flash('error', 'Invalid address');
       return res.redirect('back');
     }
-    console.log('Data:', data);
 
     const lat = data[0].latitude;
     const long = data[0].longitude;
@@ -117,5 +129,10 @@ router.delete('/:id', middleware.checkCampgroundOwnership, (req, res) => {
     else res.redirect('/campgrounds');
   });
 });
+
+// Helper Functions
+function escapeRegExp(string) {
+  return string.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+};
 
 module.exports = router;

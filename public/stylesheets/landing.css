@@ -16,6 +16,15 @@ body {
 
 #view-all {
   margin-top: 5vh;
+  background-color: #fff;
+  color: #000;
+  opacity: .7;
+  transition: all .2s;
+}
+
+#view-all:hover {
+  transform: scale(1.1);
+  opacity: .9;
 }
 
 .slideshow {
