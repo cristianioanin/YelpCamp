@@ -3,28 +3,35 @@
 <div class="row">
   <h1 class="text-center">Create a new Campground</h1>
 
-  <div style="width:60%; margin:30px auto;">
+  <div style="width:75%; margin:30px auto;">
     <form action="/campgrounds" method="POST">
       <div class="form-group">
-        <input class="form-control" type="text" name="name" placeholder="name" required>
+        <label for="name">Campground's name</label>
+        <input class="form-control" type="text" name="name" placeholder="Dolphin Camping" id="name" required>
       </div>
       <div class="form-group">
-        <input class="form-control" type="text" name="image" placeholder="image URL" required>
+        <label for="image">Add a URL to a related image</label>
+        <input class="form-control" type="text" name="image" placeholder="http://url-to-campground-image" id="image"
+          required>
       </div>
       <div class="form-group">
-        <input class="form-control" type="text" name="location" placeholder="location" required>
+        <label for="location">Location</label>
+        <input class="form-control" type="text" name="location" placeholder="Sfântu Gheorghe, România" id="location"
+          required>
       </div>
+      <label for="price">Cost</label>
       <div class="form-group input-group">
         <input class="form-control" type="number" name="price" placeholder="0.00" min="0.00" step="0.01" max="1000.00"
-          required>
+          id="price" required>
         <span class="input-group-addon">$/night</span>
       </div>
       <div class="form-group">
-        <input class="form-control" type="text" name="description" placeholder="description" required>
+        <label for="description">Write a description or just leave your impressions</label>
+        <textarea class="form-control review-editor" type="text" name="description" rows="10" id="description"></textarea>
       </div>
       <button class="btn btn-lg btn-primary btn-block">Add</button>
     </form>
-    <a href="/campgrounds">Go Back</a>
+    <a class="btn btn-secondary" href="/campgrounds">Go Back</a>
   </div>
 </div>
 

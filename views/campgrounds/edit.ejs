@@ -5,28 +5,33 @@
     <%= campground.name %>
   </h1>
 
-  <div style="width:60%; margin:30px auto;">
+  <div style="width:75%; margin:30px auto;">
     <form action="/campgrounds/<%= campground._id %>?_method=PUT" method="POST">
       <div class="form-group">
-        <input class="form-control" type="text" name="name" value="<%= campground.name %>">
+        <label for="name">Campground's name</label>
+        <input class="form-control" type="text" name="name" id="name" value="<%= campground.name %>">
       </div>
       <div class="form-group">
-        <input class="form-control" type="text" name="image" value="<%= campground.image %>">
+        <label for="image">Image link</label>
+        <input class="form-control" type="text" name="image" id="image" value="<%= campground.image %>">
       </div>
       <div class="form-group">
-        <input class="form-control" type="text" name="location" value="<%= campground.location %>">
+        <label for="location">Location</label>
+        <input class="form-control" type="text" name="location" id="location" value="<%= campground.location %>">
       </div>
+      <label for="price">Cost</label>
       <div class="form-group input-group">
-        <input class="form-control" type="number" name="price" value="<%= campground.price %>" min="0.00" step="0.01"
-          max="1000.00">
+        <input class="form-control" type="number" name="price" id="price" value="<%= campground.price %>" min="0.00"
+          step="0.01" max="1000.00">
         <span class="input-group-addon">$/night</span>
       </div>
       <div class="form-group">
-        <input class="form-control" type="text" name="description" value="<%= campground.description %>">
+        <label for="description">Edit your impressions</label>
+        <textarea class="form-control review-editor" type="text" name="description" rows="10" id="description" required><%= campground.description %></textarea>
       </div>
       <button class="btn btn-lg btn-primary btn-block">Update</button>
     </form>
-    <a href="/campgrounds">Go Back</a>
+    <a class="btn btn-secondary" href="/campgrounds">Go Back</a>
   </div>
 </div>
 
