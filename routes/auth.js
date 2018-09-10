@@ -27,7 +27,10 @@ router.post('/register', (req, res) => {
   });
 
   User.register(newUser, req.body.password, (err, user) => {
-    if (err) {
+    if (err && err.code === 11000) {
+      req.flash('error', `There is already an account with the following e-mail: ${newUser.email}`);
+      return res.redirect('/register');
+    } else if (err) {
       req.flash('error', err.message);
       return res.redirect('/register');
     }
