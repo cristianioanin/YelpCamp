@@ -41,3 +41,16 @@
 #mceu_11 {
   border-radius: 4px;
 }
+
+.footer {
+  background-color: #f8f8f8;
+  border: 1px solid #e7e7e7;
+  padding: 2rem;
+  margin-top: 5rem;
+}
+
+.footer-text > a:link,
+.footer-text > a:visited {
+  text-decoration: none;
+  transition: all .2s;
+}
