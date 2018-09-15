@@ -1,27 +1,49 @@
-.thumbnail img {
+.form-signin {
   width: 100%;
-  border-radius: 4px 4px 0 0;
+  max-width: 550px;
+  padding: 15px;
+  margin: auto;
 }
 
-.thumbnail{
-  padding: 0;
+.form-signin .form-control {
+  position: relative;
+  box-sizing: border-box;
+  height: auto;
+  padding: 10px;
+  font-size: 16px;
 }
-
-.thumbnail .caption-full {
-  padding: 9px;
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+.form-signin input[type="text"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 }
 
 .delete-form {
   display: inline-block;
+  margin-left: 1rem;
 }
 
 .auth-form {
-  width: 30%; 
+  width: 90%;
+  max-width: 550px; 
   margin: 25px auto;
 }
 
 .profile-header {
   margin-bottom: 4rem;
+}
+
+.comment:nth-of-type(even) {
+  background-color: #f2f2f2;
+  border-radius: 4px;
 }
 
 #map {
@@ -30,11 +52,10 @@
 }
 
 #user-icon {
-  margin-top: 5rem;
-  margin-left: 5rem;
+  margin: 3rem 0 2rem 5rem;
 }
 
-.glyphicon-user {
+.user-icon {
   transform: scale(5);
 }
 
@@ -43,14 +64,19 @@
 }
 
 .footer {
-  background-color: #f8f8f8;
-  border: 1px solid #e7e7e7;
-  padding: 2rem;
+  background-color: #212529;
+  padding: 1rem;
   margin-top: 5rem;
+  color: rgba(255,255,255,.5);
 }
 
 .footer-text > a:link,
 .footer-text > a:visited {
   text-decoration: none;
+  color: rgba(255,255,255,.75);
   transition: all .2s;
+}
+
+.footer-text > a:hover {
+  color: #28a745;
 }
