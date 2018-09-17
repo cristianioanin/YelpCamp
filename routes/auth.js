@@ -23,7 +23,7 @@ router.post('/register', (req, res) => {
     username: req.body.username,
     avatar: req.body.avatar,
     appliedForAdmin: req.body.appliedForAdmin,
-    isAdmin: req.body.adminCode === 'AC123' ? true : false
+    isAdmin: req.body.adminCode === process.env.ADMINCODE ? true : false
   });
 
   User.register(newUser, req.body.password, (err, user) => {
