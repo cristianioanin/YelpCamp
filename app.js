@@ -11,7 +11,7 @@ const localStrategy = require('passport-local');
 const methodOverride = require('method-override');
 
 // mongoose.connect('mongodb://localhost/yelp_camp', { useNewUrlParser: true });
-mongoose.connect(`mongodb://${process.env.MLAB_DB_USER}:${process.env.MLAB_DB_PASS}@ds161112.mlab.com:61112/yelpcamp`, { useNewUrlParser: true });
+mongoose.connect(`mongodb://sareth:donald22@ds161112.mlab.com:61112/yelpcamp`, { useNewUrlParser: true });
 mongoose.set('useFindAndModify', false);
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
